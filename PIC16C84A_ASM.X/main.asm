@@ -42,7 +42,7 @@ interruptVector:
 interruptVector_TM0OVF:
     decfsz TIMER_COUNTER
     goto interruptVector_TM0OVF_end
-    movlw 16
+    movlw 8
     movwf TIMER_COUNTER
     bsf FLAGS, 0
     nop
@@ -80,7 +80,7 @@ main:
     movlw 0b10000111	; TMR0 prescaller 1:256
     movwf OPTION_REG
     BANKSEL TIMER_COUNTER
-    movlw 16
+    movlw 8
     movwf TIMER_COUNTER
     BANKSEL INTCON
     bsf INTCON, 5	; Enable TMR0 interrupt
@@ -89,7 +89,7 @@ main:
 
 main_loop:
     btfss FLAGS, 0
-    goto main_end
+    goto main_loop
     nop
     BANKSEL PORTA
     movf PORTA, W
@@ -142,7 +142,6 @@ main_set_new_char:
     goto main_end
 main_clear_clk:
     bcf PORTB, 5
-    nop
     nop
 main_end:
     bcf FLAGS, 0
