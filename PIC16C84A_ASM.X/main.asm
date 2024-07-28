@@ -97,36 +97,39 @@ main_loop:
     movwf NEW_INPUT
     subwf LAST_INPUT, W
     btfsc STATUS, 2
-    goto main_update_output
-    BANKSEL SCRATCHPAD0
+    goto main_is_input0
+    ; Input changed
+    ; TODO: Zero out text pointer
+    movlw 0x00
+    movwf PORTB	    ; Turn off leds
+main_set_last_input:
+    BANKSEL NEW_INPUT
+    movf NEW_INPUT, W
+    BANKSEL LAST_INPUT
+    movwf LAST_INPUT
+    goto main_end   ; Initially after status change do nothing
 main_is_input0:
     movf NEW_INPUT, W
     sublw 0x00
     btfsc STATUS, 2
-    goto main_set_last_input
+    goto main_update_output
     goto main_is_input1
 main_is_input1:
     movf NEW_INPUT, W
     sublw 0x01
     btfsc STATUS, 2
-    goto main_set_last_input
+    goto main_update_output
     goto main_is_input2
 main_is_input2:
     movf NEW_INPUT, W
     sublw 0x02
     btfsc STATUS, 2
-    goto main_set_last_input
+    goto main_update_output
     goto main_is_input3
 main_is_input3:
     movf NEW_INPUT, W
     sublw 0x03
     btfsc STATUS, 2
-main_set_last_input:
-    movf NEW_INPUT, W
-    BANKSEL NEW_INPUT
-    movf NEW_INPUT, W
-    BANKSEL LAST_INPUT
-    movwf LAST_INPUT
 main_update_output:    
     BANKSEL PORTB
     btfsc PORTB, 5
