@@ -90,7 +90,6 @@ main:
 main_loop:
     btfss FLAGS, 0
     goto main_loop
-    nop
     BANKSEL PORTA
     movf PORTA, W
     andlw 0x03
@@ -99,7 +98,6 @@ main_loop:
     subwf LAST_INPUT, W
     btfsc STATUS, 2
     goto main_update_output
-    nop
     BANKSEL SCRATCHPAD0
 main_is_input0:
     movf NEW_INPUT, W
@@ -123,7 +121,6 @@ main_is_input3:
     movf NEW_INPUT, W
     sublw 0x03
     btfsc STATUS, 2
-    nop
 main_set_last_input:
     movf NEW_INPUT, W
     BANKSEL NEW_INPUT
@@ -132,7 +129,6 @@ main_set_last_input:
     movwf LAST_INPUT
 main_update_output:    
     BANKSEL PORTB
-    nop
     btfsc PORTB, 5
     goto main_clear_clk
     goto main_set_new_char
@@ -142,7 +138,6 @@ main_set_new_char:
     goto main_end
 main_clear_clk:
     bcf PORTB, 5
-    nop
 main_end:
     bcf FLAGS, 0
     goto main_loop
