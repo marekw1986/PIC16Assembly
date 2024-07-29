@@ -143,14 +143,10 @@ main_end:
     bcf FLAGS, 0
     goto main_loop
     
-    
 ascii_to_baudot:
     return
     
-    db "Tekst 1"
-    db "Tekst 2"
-    db "Tekst 3"
-    db "Tekst 4"
+#include "text.inc"
     
     end resetVect ; program ends here
 
