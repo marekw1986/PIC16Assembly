@@ -97,7 +97,7 @@ main_loop:
     movwf NEW_INPUT
     subwf LAST_INPUT, W
     btfsc STATUS, 2
-    goto main_is_input0
+    goto main_check_clk
     ; Input changed
     ; TODO: Zero out text pointer
     movlw 0x00
@@ -108,33 +108,31 @@ main_set_last_input:
     BANKSEL LAST_INPUT
     movwf LAST_INPUT
     goto main_end   ; Initially after status change do nothing
+main_check_clk:    
+    BANKSEL PORTB
+    btfsc PORTB, 5
+    goto main_clear_clk
 main_is_input0:
     movf NEW_INPUT, W
     sublw 0x00
     btfsc STATUS, 2
-    goto main_update_output
+    goto main_set_new_char
     goto main_is_input1
 main_is_input1:
     movf NEW_INPUT, W
     sublw 0x01
     btfsc STATUS, 2
-    goto main_update_output
+    goto main_set_new_char
     goto main_is_input2
 main_is_input2:
     movf NEW_INPUT, W
     sublw 0x02
     btfsc STATUS, 2
-    goto main_update_output
+    goto main_set_new_char
     goto main_is_input3
 main_is_input3:
+    ; No other options left - just update
     movf NEW_INPUT, W
-    sublw 0x03
-    btfsc STATUS, 2
-main_update_output:    
-    BANKSEL PORTB
-    btfsc PORTB, 5
-    goto main_clear_clk
-    goto main_set_new_char
 main_set_new_char:
     movlw 0xFF
     movwf PORTB
