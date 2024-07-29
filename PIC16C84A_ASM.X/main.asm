@@ -27,7 +27,8 @@ FLAGS equ 0x20
 TIMER_COUNTER equ 0x21
 LAST_INPUT equ 0x22
 NEW_INPUT equ 0x23
-SCRATCHPAD0 equ 0x24
+TEXT_POINTER equ 0x24
+SCRATCHPAD equ 0x25
 
 ; Program
 PSECT resetVect, class=CODE, delta=2
@@ -59,6 +60,8 @@ main:
     movwf FLAGS
     BANKSEL LAST_INPUT
     movwf LAST_INPUT
+    BANKSEL TEXT_POINTER
+    movwf TEXT_POINTER
     
     BANKSEL ANSEL ; Select Bank of ANSEL
     movlw 0x00 ; Configure all pins
@@ -88,6 +91,7 @@ main:
     bsf INTCON, 7 ;enable interrupts
 
 main_loop:
+    BANKSEL FLAGS
     btfss FLAGS, 0
     goto main_loop
     BANKSEL PORTA
@@ -95,12 +99,15 @@ main_loop:
     andlw 0x03
     BANKSEL NEW_INPUT
     movwf NEW_INPUT
+    BANKSEL LAST_INPUT
     subwf LAST_INPUT, W
     btfsc STATUS, 2
     goto main_check_clk
     ; Input changed
-    ; TODO: Zero out text pointer
     movlw 0x00
+    BANKSEL TEXT_POINTER
+    movwf TEXT_POINTER	    ; TODO: Zero out text pointer
+    BANKSEL PORTB
     movwf PORTB	    ; Turn off leds
 main_set_last_input:
     BANKSEL NEW_INPUT
@@ -134,7 +141,21 @@ main_is_input3:
     ; No other options left - just update
     movf NEW_INPUT, W
 main_set_new_char:
-    movlw 0xFF
+    call get_next_character
+    BANKSEL SCRATCHPAD
+    movwf SCRATCHPAD
+    sublw 0x00
+    btfsc STATUS, 2
+    goto main_set_new_char_zero_case
+    BANKSEL TEXT_POINTER
+    incf TEXT_POINTER, F
+    goto main_set_new_char_transfer 
+main_set_new_char_zero_case:
+    movlw 0x00
+    BANKSEL TEXT_POINTER
+    movwf TEXT_POINTER
+main_set_new_char_transfer:    
+    movf SCRATCHPAD, W
     movwf PORTB
     goto main_end
 main_clear_clk:
@@ -143,8 +164,16 @@ main_end:
     bcf FLAGS, 0
     goto main_loop
     
-ascii_to_baudot:
-    return
+get_next_character:
+    addlw LOW(text1_data)
+    movwf SCRATCHPAD
+    movlw HIGH(text1_data)
+    btfsc STATUS, 0 ;C
+    addlw 1
+    movwf PCLATH
+    movf SCRATCHPAD, W
+    addwf TEXT_POINTER, W
+    movwf PCL
     
 #include "text.inc"
     
