@@ -165,13 +165,45 @@ main_end:
     goto main_loop
     
 get_next_character:
+    BANKSEL LAST_INPUT
+    movf LAST_INPUT, W
+    sublw 0x00
+    btfss STATUS, 2
+    goto get_next_character_input1
+    addlw LOW(text0_data)
+    movwf SCRATCHPAD
+    movlw HIGH(text0_data)
+    goto get_next_character_perform
+get_next_character_input1:
+    movf LAST_INPUT, W
+    sublw 0x01
+    btfss STATUS, 2
+    goto get_next_character_input2
     addlw LOW(text1_data)
     movwf SCRATCHPAD
     movlw HIGH(text1_data)
+    goto get_next_character_perform
+get_next_character_input2:
+    movf LAST_INPUT, W
+    sublw 0x02
+    btfss STATUS, 2
+    goto get_next_character_set_text3
+    addlw LOW(text2_data)
+    movwf SCRATCHPAD
+    movlw HIGH(text2_data)
+    goto get_next_character_perform
+get_next_character_set_text3:
+    addlw LOW(text3_data)
+    movwf SCRATCHPAD
+    movlw HIGH(text3_data)
+    goto get_next_character_perform
+get_next_character_perform:
     btfsc STATUS, 0 ;C
     addlw 1
     movwf PCLATH
+    BANKSEL SCRATCHPAD
     movf SCRATCHPAD, W
+    BANKSEL TEXT_POINTER
     addwf TEXT_POINTER, W
     movwf PCL
     
