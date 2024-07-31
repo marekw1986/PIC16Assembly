@@ -145,7 +145,7 @@ main_set_new_char:
     BANKSEL SCRATCHPAD
     movwf SCRATCHPAD
     sublw 0x00
-    btfsc STATUS, 2
+    btfsc STATUS, 2 ; Z
     goto main_set_new_char_zero_case
     BANKSEL TEXT_POINTER
     incf TEXT_POINTER, F
@@ -154,9 +154,12 @@ main_set_new_char_zero_case:
     movlw 0x00
     BANKSEL TEXT_POINTER
     movwf TEXT_POINTER
-main_set_new_char_transfer:    
+main_set_new_char_transfer:
+    BANKSEL SCRATCHPAD
     movf SCRATCHPAD, W
+    andlw 0x1F	; Mask five bits only
     movwf PORTB
+    bsf PORTB, 5
     goto main_end
 main_clear_clk:
     bcf PORTB, 5
