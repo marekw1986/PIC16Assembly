@@ -1,29 +1,34 @@
 text0_data:
-	 retlw 'J'
-	 retlw 'e'
-	 retlw 'd'
-	 retlw 'e'
-	 retlw 'n'
+	 retlw 0x1f
+	 retlw 0xb
+	 retlw 0x1
+	 retlw 0x9
+	 retlw 0x1
+	 retlw 0xc
 	 retlw 0x00
 
 text1_data:
-	 retlw 'D'
-	 retlw 'w'
-	 retlw 'a'
+	 retlw 0x1f
+	 retlw 0x9
+	 retlw 0x13
+	 retlw 0x3
 	 retlw 0x00
 
 text2_data:
-	 retlw 'T'
-	 retlw 'r'
-	 retlw 'z'
-	 retlw 'y'
+	 retlw 0x1f
+	 retlw 0x10
+	 retlw 0xa
+	 retlw 0x11
+	 retlw 0x15
 	 retlw 0x00
 
 text3_data:
-	 retlw 'C'
-	 retlw 'z'
-	 retlw 't'
-	 retlw 'e'
-	 retlw 'r'
-	 retlw 'y'
+	 retlw 0x1f
+	 retlw 0xe
+	 retlw 0x11
+	 retlw 0x10
+	 retlw 0x1
+	 retlw 0xa
+	 retlw 0x15
 	 retlw 0x00
+
