@@ -106,9 +106,12 @@ main_loop:
     ; Input changed
     movlw 0x00
     BANKSEL TEXT_POINTER
-    movwf TEXT_POINTER	    ; TODO: Zero out text pointer
+    movwf TEXT_POINTER	    ; Zero out text pointer
     BANKSEL PORTB
     movwf PORTB	    ; Turn off leds
+    BANKSEL TIMER_COUNTER
+    movlw 8
+    movwf TIMER_COUNTER
 main_set_last_input:
     BANKSEL NEW_INPUT
     movf NEW_INPUT, W
