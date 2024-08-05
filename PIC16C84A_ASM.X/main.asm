@@ -10,7 +10,7 @@ processor 16F88
   CONFIG  PWRTE = OFF           ; Power-up Timer Enable bit (PWRT disabled)
   CONFIG  MCLRE = ON            ; RA5/MCLR/VPP Pin Function Select bit (RA5/MCLR/VPP pin function is MCLR)
   CONFIG  BOREN = ON            ; Brown-out Reset Enable bit (BOR enabled)
-  CONFIG  LVP = ON              ; Low-Voltage Programming Enable bit (RB3/PGM pin has PGM function, Low-Voltage Programming enabled)
+  CONFIG  LVP = OFF              ; Low-Voltage Programming Enable bit (RB3/PGM pin has PGM function, Low-Voltage Programming enabled)
   CONFIG  CPD = OFF             ; Data EE Memory Code Protection bit (Code protection off)
   CONFIG  WRT = OFF             ; Flash Program Memory Write Enable bits (Write protection off)
   CONFIG  CCPMX = RB0           ; CCP1 Pin Selection bit (CCP1 function on RB0)
