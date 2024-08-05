@@ -5,7 +5,7 @@ processor 16F88
 ; Assembly source line config statements
 
 ; CONFIG1
-  CONFIG  FOSC = EXTRCCLK       ; Oscillator Selection bits (EXTRC oscillator; CLKO function on RA6/OSC2/CLKO)
+  CONFIG  FOSC = INTOSCIO       ; Oscillator Selection bits (INTRC oscillator; port I/O function on both RA6/OSC2/CLKO pin and RA7/OSC1/CLKI pin)
   CONFIG  WDTE = OFF            ; Watchdog Timer Enable bit (WDT disabled)
   CONFIG  PWRTE = OFF           ; Power-up Timer Enable bit (PWRT disabled)
   CONFIG  MCLRE = ON            ; RA5/MCLR/VPP Pin Function Select bit (RA5/MCLR/VPP pin function is MCLR)
@@ -41,10 +41,12 @@ interruptVector:
     btfsc INTCON, 2
     goto interruptVector_TM0OVF
 interruptVector_TM0OVF:
+    BANKSEL TIMER_COUNTER
     decfsz TIMER_COUNTER
     goto interruptVector_TM0OVF_end
     movlw 8
     movwf TIMER_COUNTER
+    BANKSEL FLAGS
     bsf FLAGS, 0
     nop
 interruptVector_TM0OVF_end:
@@ -53,6 +55,9 @@ interruptVector_TM0OVF_end:
 
 PSECT code, delta=2
 main:
+    BANKSEL OSCCON
+    movlw 0b01100010
+    movwf OSCCON
     ; At startup, all ports are inputs.
     ; Set Port B to all outputs.
     BANKSEL FLAGS
